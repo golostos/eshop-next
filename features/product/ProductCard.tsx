@@ -11,7 +11,7 @@ type ProductCardProps = {
 
 export default function ProductCard({ product }: ProductCardProps) {
 	return (
-		<Card className="" key={product.id}>
+		<Card className="transition-transform hover:-translate-y-2" key={product.id}>
 			<CardHeader>
 				<CardTitle>{product.name}</CardTitle>
 				<CardDescription>{product.desc}</CardDescription>
