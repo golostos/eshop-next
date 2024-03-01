@@ -4,9 +4,14 @@ GET http://localhost:3000/api/product
 
 POST http://localhost:3000/api/cart     
 Content-Type: application/json
-Cookie: next-auth.session-token=1c97c6b6-2f90-425b-b25e-a99c44771b57
+Cookie: next-auth.session-token=4d25fa59-8bc4-4e2a-828c-45cd78d62ff9
 
 {
     "productId": 100,
     "quantity": 1
 }
+
+###
+
+GET http://localhost:3000/api/cart
+Cookie: next-auth.session-token=4d25fa59-8bc4-4e2a-828c-45cd78d62ff9

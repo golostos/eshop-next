@@ -5,7 +5,6 @@ import { z } from 'zod'
 
 export async function POST(req: NextRequest) {
     const session = await getAuthSession()
-    console.log(session);
     if (session?.user?.email) {
         const body = await req.json()
         const email = session.user.email
@@ -16,7 +15,40 @@ export async function POST(req: NextRequest) {
         const parsedBody = await bodySchema.safeParseAsync(body)
         if (parsedBody.success) {
             try {
-                await db.cart.create({
+                const cart = await db.cart.findFirst({
+                    where: {
+                        User: {
+                            email
+                        },
+                        ProductCart: {
+                            some: {
+                                productId: parsedBody.data.productId
+                            }
+                        }
+                    },
+                    include: {
+                        ProductCart: true
+                    }
+                })
+                if (cart) {
+                    await db.cart.update({
+                        where: {
+                            id: cart.id
+                        },
+                        data: {
+                            ProductCart: {
+                                update: {
+                                    where: {
+                                        id: cart.ProductCart[0].id
+                                    },
+                                    data: {
+                                        quantity: cart.ProductCart[0].quantity + parsedBody.data.quantity
+                                    }
+                                }
+                            }
+                        }
+                    })
+                } else await db.cart.create({
                     data: {
                         User: {
                             connect: {
@@ -50,6 +82,26 @@ export async function POST(req: NextRequest) {
     })
 }
 
-export async function GET(req: NextRequest) {
-    
+export async function GET() {
+    const session = await getAuthSession()
+    if (session?.user?.email) {
+        const email = session.user.email;
+        const cart = await db.cart.findMany({
+            where: {
+                User: {
+                    email
+                }
+            },
+            include: {
+                ProductCart: {
+                    include: {
+                        Product: true
+                    }
+                }
+            }
+        })
+        return NextResponse.json({
+            cart
+        })
+    }
 }
