@@ -105,3 +105,48 @@ export async function GET() {
         })
     }
 }
+
+export async function DELETE(req: NextRequest) {
+    const session = await getAuthSession()
+    if (session?.user?.email) {
+        const email = session.user.email;
+        const body = await req.json()
+        const bodySchema = z.object({
+            productId: z.number().gt(0)
+        })
+        const parsedBody = await bodySchema.safeParseAsync(body)
+        if (parsedBody.success) {
+            const cart = await db.cart.findFirst({
+                where: {
+                    User: {
+                        email
+                    },
+                    ProductCart: {
+                        some: {
+                            productId: parsedBody.data.productId
+                        }
+                    }
+                }
+            })
+            if (!cart) {
+                return new Response('Product not found in cart', {
+                    status: 404
+                })
+            }
+            await db.productCart.deleteMany({
+                where: {
+                    productId: parsedBody.data.productId,
+                    cartId: cart.id
+                }
+            })
+            await db.cart.delete({
+                where: {
+                    id: cart.id
+                }
+            })
+            return NextResponse.json({
+                message: 'Product removed from cart'
+            })
+        }
+    }
+}
