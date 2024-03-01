@@ -1,12 +1,16 @@
 'use client';
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Cart, cartSchema } from './cart-schema';
 import { useToast } from '@/components/ui/use-toast';
 import Image from 'next/image';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
 export default function CartPage() {
   const { toast } = useToast()
+  const queryClient = useQueryClient()
   const { data: cart, isLoading, isError } = useQuery<Cart | undefined>({
     queryKey: ['cart'],
     queryFn: () => {
@@ -19,7 +23,7 @@ export default function CartPage() {
         toast({
           title: 'Error',
           description: error.message,
-          variant: "destructive"       
+          variant: "destructive"
         })
         return undefined
       })
@@ -41,17 +45,37 @@ export default function CartPage() {
   return (
     <div>
       <h2>Cart</h2>
-      <ul>
+      <div className='flex flex-col gap-4'>
         {formattedCart.map(cartItem => (
-          <li key={cartItem.productId}>
+          <Card key={cartItem.productId} className='flex gap-4 p-4'>
             <h3>{cartItem.productName}</h3>
             <p>{cartItem.productDesc}</p>
             <p>{cartItem.productPrice}</p>
             <p>{cartItem.quantity}</p>
             <Image src={cartItem.productImg} alt={cartItem.productName} width={50} height={50} />
-          </li>
+            <Button size={'icon'} variant={'destructive'} onClick={() => {
+              fetch('/api/cart', {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  productId: cartItem.productId
+                })
+              }).then(res => {
+                if (!res.ok) throw new Error('Network response was not ok')
+                queryClient.invalidateQueries({ queryKey: ['cart'] })
+                toast({
+                  title: 'Success',
+                  description: 'Item removed from cart',
+                })
+              })
+            }}>
+              <Trash2 />
+            </Button>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
