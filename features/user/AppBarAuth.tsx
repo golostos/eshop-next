@@ -15,10 +15,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function AppBarAuth() {
   const session = useSession()
   const router = useRouter()
+  if (session.status === 'loading') {
+    return <div className='flex gap-4'>
+      <Skeleton className='h-10 w-10' />
+      <Skeleton className='h-10 w-10 rounded-full' />
+    </div>
+  }
   if (session.data?.user) {
     return (
       <div className='flex gap-4'>
