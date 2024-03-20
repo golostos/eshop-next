@@ -16,7 +16,8 @@ import { useRouter } from "next/navigation";
 import CartClearDialog from "./CartClearDialog";
 
 export default function CartPage() {
-  const { mutate: addToCart } = useAddToCart();
+  // const { mutate: addToCart } = useAddToCart();
+  const addToCart = useAddToCart().mutate
   const { mutate: updateCart } = useUpdateCart();
   const { mutate: removeFromCart } = useRemoveFromCart();
   const { cart, isLoading, isError } = useGetCart();

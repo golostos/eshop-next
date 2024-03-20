@@ -15,7 +15,7 @@ type Props = {
   onClear: () => void;
 };
 
-export default function CartClearDialog({
+export default function FavoritesClearDialog({
   children, // Button
   onClear, // callback
 }: PropsWithChildren<Props>) {
@@ -30,7 +30,7 @@ export default function CartClearDialog({
             Are you absolutely sure?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently clear your cart.
+            This action cannot be undone. This will permanently clear your favorites.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

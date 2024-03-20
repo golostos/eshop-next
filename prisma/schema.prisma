@@ -11,36 +11,49 @@ datasource db {
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String
-  price       Float
-  desc        String
-  img         String
-  productCart Cart[]
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id             Int          @id @default(autoincrement())
+  name           String
+  price          Float
+  desc           String
+  img            String
+  cart           Cart[]
+  orderItems     OrderItem[]
+  favorites      Favorite[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  // @@map("products")
+  Manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
+  manufacturerId Int
 }
 
-// model ProductCart {
-//   id        Int     @id @default(autoincrement())
-//   Product   Product @relation(fields: [productId], references: [id])
-//   productId Int
-//   Cart      Cart    @relation(fields: [cartId], references: [id])
-//   cartId    Int
-//   quantity  Int
-// }
+model Manufacturer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String
+  Product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+}
 
 model Cart {
   id        Int      @id @default(autoincrement())
-  Product   Product  @relation(fields: [productId], references: [id])
-  productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   // + User
   User      User     @relation(fields: [userId], references: [id])
   userId    String
   quantity  Int      @db.SmallInt
+  Product   Product  @relation(fields: [productId], references: [id])
+  productId Int
 }
 
 model Order {
@@ -100,15 +113,16 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   orders        Order[]
   carts         Cart[]
   accounts      Account[]
   sessions      Session[]
+  favorites     Favorite[]
 }
 
 model VerificationToken {

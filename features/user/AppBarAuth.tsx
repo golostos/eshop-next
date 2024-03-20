@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { ShoppingBasket } from 'lucide-react'
+import { Heart, ShoppingBasket } from 'lucide-react'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -16,10 +16,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetFavorites } from '../favorites/use-favorites'
 
 export default function AppBarAuth() {
   const session = useSession()
   const router = useRouter()
+  const { favorites } = useGetFavorites()
   if (session.status === 'loading') {
     return <div className='flex gap-4'>
       <Skeleton className='h-10 w-10' />
@@ -29,6 +31,13 @@ export default function AppBarAuth() {
   if (session.data?.user) {
     return (
       <div className='flex gap-4'>
+        {
+          (favorites && favorites.length > 0) ?
+            <Button size={'icon'} variant={'secondary'} onClick={() => router.push('/favorites')}>
+              <Heart />
+            </Button> 
+            : null
+        }
         <Button size={'icon'} onClick={() => {
           router.push('/cart')
         }}><ShoppingBasket /></Button>

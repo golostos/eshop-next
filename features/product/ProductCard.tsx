@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Product } from "@prisma/client";
-import AddToCart from "./AddToCart";
+import ProductCartWidget from "./ProductCartWidget";
 
 type ProductCardProps = {
   product: Product;
@@ -37,7 +37,7 @@ export default function ProductCard({
         />
       </CardContent>
       <CardFooter className="flex justify-between">
-        <AddToCart product={product} />
+        <ProductCartWidget product={product} />
       </CardFooter>
     </Card>
   );

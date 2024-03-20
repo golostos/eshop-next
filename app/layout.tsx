@@ -26,7 +26,7 @@ export default function RootLayout({
             {children}
           </main>
         </Providers>
-        <Toaster />
+        <Toaster />        
       </body>
     </html>
   );

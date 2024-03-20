@@ -3,22 +3,21 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { CartDTO, cartSchema } from "./cart-schema";
+import { FavoritesDTO, favoritesSchema } from "./favorites-schema";
 import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { ToastAction } from "@/components/ui/toast";
 
-export function useGetCart() {
+export function useGetFavorites() {
   const { toast } = useToast();
   const {
-    data: cart,
+    data: favorites,
     isLoading,
     isError,
-  } = useQuery<CartDTO | undefined>({
-    queryKey: ["cart"],
+  } = useQuery<FavoritesDTO | undefined>({
+    queryKey: ["favorites"],
     queryFn: () => {
-      return fetch("/api/cart")
+      return fetch("/api/favorites")
         .then((res) => {
           if (!res.ok) {
             if (res.status === 401) {
@@ -29,7 +28,7 @@ export function useGetCart() {
           return res.json();
         })
         .then((data) => {
-          return cartSchema.parse(data);
+          return favoritesSchema.parse(data);
         })
         .catch((error) => {
           if (error.message !== "Unauthorized")
@@ -42,10 +41,10 @@ export function useGetCart() {
         });
     },
   });
-  return { cart: cart?.cart, isLoading, isError };
+  return { favorites: favorites?.favorites, isLoading, isError };
 }
 
-export function useAddToCart() {
+export function useAddToFavorite() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -53,9 +52,8 @@ export function useAddToCart() {
   return useMutation({
     mutationFn: async (body: {
       productId: number;
-      quantity: number;
     }) => {
-      const response = await fetch("/api/cart", {
+      const response = await fetch("/api/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,27 +75,27 @@ export function useAddToCart() {
       });
     },
     onSuccess: () => {
-      if (window.location.pathname !== "/cart")
+      if (window.location.pathname !== "/favorites")
         toast({
           title: "Success",
-          description: "Item added to cart",
+          description: "Item added to favorites",
           action: (
             <ToastAction
-              onClick={() => router.push("/cart")}
-              altText="View cart"
+              onClick={() => router.push("/favorites")}
+              altText="View favorites"
             >
-              View cart
+              View favorites
             </ToastAction>
           ),
         });
       queryClient.invalidateQueries({
-        queryKey: ["cart"],
+        queryKey: ["favorites"],
       });
     },
   });
 }
 
-export function useRemoveFromCart() {
+export function useRemoveFromFavorites() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   return useMutation({
@@ -106,7 +104,7 @@ export function useRemoveFromCart() {
     }: {
       productId?: number;
     }) => {
-      const response = await fetch("/api/cart", {
+      const response = await fetch("/api/favorites", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -129,55 +127,18 @@ export function useRemoveFromCart() {
     },
     onSuccess: (data, productId) => {
       queryClient.invalidateQueries({
-        queryKey: ["cart"],
+        queryKey: ["favorites"],
       });
       if (productId)
         toast({
           title: "Success",
-          description: "Item removed from cart",
+          description: "Item removed from favorites",
         });
       else
         toast({
           title: "Success",
-          description: "Cart cleared",
+          description: "Favorites cleared",
         });
-    },
-  });
-}
-
-export function useUpdateCart() {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (body: {
-      productId: number;
-      quantity: number;
-    }) => {
-      const response = await fetch("/api/cart", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) {
-        return Promise.reject(
-          new Error("Network response was not ok")
-        );
-      }
-      return response.json();
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["cart"],
-      });
     },
   });
 }
