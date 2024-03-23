@@ -1,0 +1,42 @@
+version: '3'
+# Docker swarm
+
+services:
+  app:
+    image: registry.gitlab.com/golostos/eshop:latest
+    container_name: app
+    command: sh -c "npm run db:migrate:deploy && npm run db:seed && npm start"
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.production
+    depends_on:
+      - db
+    networks:
+      - app_network
+    restart: unless-stopped  
+
+  db:
+    image: 'postgres:latest'
+    env_file:
+      - .env.production
+    networks:
+      - app_network
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  db_data:
