@@ -4,6 +4,9 @@ if [ ! -f docker-compose.prod.yml ]; then
   cd ..
 fi
 
+ssh prod "apt-get update"
+ssh prod "apt-get install nginx -y"
+
 # Copy the Nginx configuration file to the remote host prod (for proxy to the Next.js app)
 scp nginx/nginx.conf prod:/etc/nginx/sites-enabled/default
 
