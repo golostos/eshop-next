@@ -15,8 +15,7 @@
     "upload-files": "bash ./scripts/upload-files.sh",
     "docker:build": "bash ./scripts/docker-build.sh",
     "docker:deploy": "bash ./scripts/deploy.sh",
-    "deploy": "pnpm upload-files && pnpm docker:build && pnpm docker:deploy",
-    "init-nginx": "bash ./scripts/init-nginx.sh"
+    "deploy": "pnpm upload-files && pnpm docker:build && pnpm docker:deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
