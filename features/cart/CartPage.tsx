@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import CartClearDialog from "./CartClearDialog";
+import CreateOrderDialog from '../order/CreateOrderDialog';
 
 export default function CartPage() {
   // const { mutate: addToCart } = useAddToCart();
@@ -117,15 +118,7 @@ export default function CartPage() {
         ))}
       </div>
       <div className="w-full flex items-center justify-end mt-8 gap-4">
-        <Button
-          onClick={() => {
-            // router.push("/");
-          }}
-          className="flex items-center gap-2"
-        >
-          Buy
-          <Wallet />
-        </Button>
+        <CreateOrderDialog />
         <CartClearDialog
           onClear={() => {
             removeFromCart({});

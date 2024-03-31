@@ -17,4 +17,4 @@ ssh prod "snap install --classic certbot"
 ssh prod "ln -s /snap/bin/certbot /usr/bin/certbot"
 
 # Get SSL certificate from Let's Encrypt (HTTPS)
-ssh prod "certbot --nginx --email info@mkboost.ru --agree-tos --no-eff-email --force-renewal -d mkboost.ru -d www.mkboost.ru"
+ssh prod "certbot --nginx --email info@seschool-test.ru --agree-tos --no-eff-email --force-renewal -d seschool-test.ru"

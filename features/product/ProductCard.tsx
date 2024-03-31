@@ -29,12 +29,15 @@ export default function ProductCard({
         <CardDescription>{product.desc}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Image
-          src={product.img}
-          alt={product.name}
-          width={500}
-          height={500}
-        />
+        <div className="relative h-96 sm:h-72 lg:h-48">
+          <Image
+            src={product.img}
+            alt={product.name}
+            fill
+            className="object-contain"
+            sizes="(min-width: 1560px) 205px, (min-width: 1520px) calc(-340vw + 5441px), (min-width: 1280px) calc(13.64vw + 68px), (min-width: 1040px) calc(33.64vw - 85px), (min-width: 640px) calc(50vw - 89px), calc(100vw - 113px)"
+          />
+        </div>
       </CardContent>
       <CardFooter className="flex justify-between">
         <ProductCartWidget product={product} />
