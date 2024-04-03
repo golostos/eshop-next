@@ -10,6 +10,7 @@ export default function Home({
 }: {
   searchParams?: {
     manufacturer?: string;
+    search?: string;
   };
 }) {
   return (

@@ -2,25 +2,25 @@ import React from 'react'
 import ProductCard from './ProductCard'
 import { db } from '@/prisma/db'
 import Filter from '../filters/Filter';
+import { Prisma } from '@prisma/client';
 
 export default async function Catalog({
   searchParams,
 }: {
   searchParams?: {
     manufacturer?: string;
+    search?: string;
   };
 }) {
-  console.log(searchParams);
-  const catalog =
-    searchParams?.manufacturer && searchParams?.manufacturer !== "0"
-      ? await db.product.findMany({
-          where: {
-            manufacturerId: parseInt(
-              searchParams.manufacturer
-            ),
-          },
-        })
-      : await db.product.findMany();
+  // Делаем объект where для запроса к базе для двух фильтров. Если фильтр не выбран, то он не участвует в запросе
+  const where: Prisma.ProductWhereInput = {}
+  if (searchParams?.manufacturer) where.manufacturerId = parseInt(searchParams.manufacturer)
+  if (searchParams?.search) where.name = { contains: searchParams.search }
+
+  const catalog = await db.product.findMany({
+    where,
+  });
+
   return (
     <div>
       <div className="flex justify-between">

@@ -40,7 +40,7 @@ export default function ProductCard({
           />
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between absolute bottom-0">
+      <CardFooter className="flex justify-between absolute bottom-0 w-full">
         <ProductCartWidget product={product} />
       </CardFooter>
     </Card>
