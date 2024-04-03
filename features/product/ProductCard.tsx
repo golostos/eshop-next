@@ -21,14 +21,15 @@ export default function ProductCard({
 }: ProductCardProps) {  
   return (
     <Card
-      className="transition-transform hover:-translate-y-2"
+      className="transition-transform hover:-translate-y-2 relative py-20"
       key={product.id}
     >
-      <CardHeader>
-        <CardTitle>{product.name}</CardTitle>
+      <CardHeader className="absolute top-0">
+        <CardTitle className=''>{product.name}</CardTitle>
         <CardDescription>{product.desc}</CardDescription>
       </CardHeader>
-      <CardContent>
+      {/* <CardContent className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"> */}
+      <CardContent className="py-0">
         <div className="relative h-96 sm:h-72 lg:h-48">
           <Image
             src={product.img}
@@ -39,7 +40,7 @@ export default function ProductCard({
           />
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between absolute bottom-0">
         <ProductCartWidget product={product} />
       </CardFooter>
     </Card>

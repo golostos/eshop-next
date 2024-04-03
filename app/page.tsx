@@ -3,10 +3,16 @@ import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: {
+  searchParams?: {
+    manufacturer?: string;
+  };
+}) {
   return (
     <Suspense fallback="Loading...">
-      <Catalog />
+      <Catalog searchParams={searchParams} />
     </Suspense>
   );
 }
